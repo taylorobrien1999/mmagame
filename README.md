@@ -4,9 +4,14 @@ Two-player co-op combat sports promotion manager. Browser-based, mobile-first, p
 
 ```bash
 npm install
-npm run sim:calibrate     # runs ~18,000 simulated fights + invariant checks
+npm run dev                # starts the app at http://localhost:5173
+npm run sim:calibrate      # runs ~18,000 simulated fights + invariant checks
+npm run sim:negotiation    # runs the personality/negotiation calibration
 npm run typecheck
 ```
+
+Copy `.env.example` to `.env` and fill in your Supabase URL + publishable
+key before `npm run dev` will start — see SETUP.md.
 
 ---
 
@@ -82,6 +87,13 @@ src/sim/venue.ts        Venue booking requests, PotN/FotN bonus selection.
 src/sim/negotiation-harness.ts   Negotiation calibration.
 db/schema.sql           Base Postgres schema.
 db/schema-v2.sql        Divisions, titles, bonuses, venues, personality, RLS.
+
+src/design/tokens.md    The design plan — why this palette/type, not defaults.
+src/design/types.ts     UI-facing types, thin mirror of the DB schema.
+src/lib/supabase.ts     Client using the PUBLISHABLE key only. Read before touching auth.
+src/app/                Router, shell, global CSS.
+src/components/         WorldClockBar, EventMarquee, StatLedger, FighterCard.
+src/pages/              Dashboard (built out) + empty-state stubs for the rest.
 ```
 
 ---
@@ -162,6 +174,38 @@ post about it, which feeds the news system and damages promotion reputation.
 
 ---
 
+## Frontend
+
+React + TypeScript + Vite + Tailwind, built as described in the original
+plan. The dashboard is fully built with placeholder data shaped exactly like
+what Supabase will return — swapping mock data for real queries is a
+drop-in replacement, not a rewrite.
+
+**Design direction:** read `src/design/tokens.md` before changing colors,
+type, or adding a new card pattern. Short version — the visual language is
+broadcast/stat-sheet (condensed display type, hairline-divided stat blocks,
+a fight-bill event layout), not generic SaaS dashboard (rounded cards,
+uniform shadows). `signal` (red) and `prestige` (gold) carry specific
+meaning — live/urgent and earned/valuable respectively — and are never used
+as decoration.
+
+Every route in the sidebar renders — `Dashboard` is built out, the rest
+(`Roster`, `Events`, `Negotiations`, `Promotion`, `League`, `Free agents`)
+are real empty states rather than "coming soon" placeholders, ready to have
+their real content dropped in as phase 2 continues.
+
+**Not yet done:** none of it talks to Supabase yet. `src/lib/supabase.ts`
+has the client ready; the pages need their mock data blocks replaced with
+actual queries. That's the next piece of phase 2.
+
+**Known follow-up, not a bug:** the font bundle currently includes every
+language subset (Cyrillic, Greek, Vietnamese) of both typefaces, which is
+unnecessary weight. Worth trimming to Latin-only subsets before this ships
+anywhere real — flagging it rather than fixing it now to keep this batch
+focused.
+
+---
+
 ## Spectator mode
 
 Needs no new tables. `bout.result` already holds the complete `PlayByPlay[]`,
@@ -214,7 +258,7 @@ Recompute them from your actual downloaded dataset or every rating will be skewe
 |---|---|---|---|
 | 0 | Data pipeline + schema | 15h | schema done |
 | 1 | Fight engine, headless | 25h | **done** |
-| 2 | Single-player loop: book card, run event, earn money | 20h | next |
+| 2 | Single-player loop: book card, run event, earn money | 20h | UI shell done, needs wiring to Supabase |
 | 3 | Mobile UI + live event screen | 25h | |
 | 4 | Multiplayer, world clock, ready-up | 20h | |
 | 5 | Creation suite, traits, facilities, news feed | 40h | deferred |

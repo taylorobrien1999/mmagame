@@ -53,19 +53,28 @@ This pulls in `tsx` (runs TypeScript directly, no build step) and
 
 ## 4. Verify everything actually works
 
-Three commands, in order. If any of these fail, something went wrong in
-step 3 — don't move on to git yet.
+Four commands. If any fail, something went wrong in step 3 — don't move on
+to git yet.
 
 ```bash
 npm run typecheck        # should print nothing and exit clean
 npm run sim:calibrate     # runs ~18,000 simulated fights, prints a report
 npm run sim:negotiation   # runs the personality/negotiation calibration
+npm run dev               # starts the app at http://localhost:5173
 ```
 
 `sim:calibrate` should end with a sample play-by-play fight. `sim:negotiation`
-should end with a personality axis spread table. If you see those, the whole
-sim layer works exactly as it did when I built it — nothing was lost in the
-zip.
+should end with a personality axis spread table. `npm run dev` should print a
+local URL — open it and you'll see the dashboard with placeholder data: a
+world clock bar, an event marquee styled like a fight bill, and a roster
+list. It won't be wired to Supabase yet (that's the next phase), but every
+screen renders and every route in the sidebar works.
+
+**Before `npm run dev` will work**, copy `.env.example` to `.env` and fill in
+your Supabase URL and **publishable** key (Settings → API in your Supabase
+project — the `sb_publishable_...` key, never `sb_secret_...`). The app
+throws a clear error on startup if this is missing rather than failing
+silently.
 
 ---
 

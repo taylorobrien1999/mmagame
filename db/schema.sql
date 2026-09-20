@@ -19,7 +19,7 @@ create table world (
   name          text not null,
   seed          text not null,
   -- The in-game clock. Everything advances off this.
-  current_date  date not null default '2026-09-20',
+  in_game_date  date not null default '2026-09-20',
   -- 'RUNNING' | 'AWAITING_READY' | 'SIMULATING'
   status        text not null default 'RUNNING',
   created_at    timestamptz not null default now()
