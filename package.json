@@ -1,0 +1,16 @@
+{
+  "name": "mmagame",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sim:calibrate": "tsx src/sim/harness.ts",
+    "typecheck": "tsc --noEmit",
+    "sim:negotiation": "tsx src/sim/negotiation-harness.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.0"
+  }
+}

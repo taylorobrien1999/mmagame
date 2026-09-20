@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.local
+.DS_Store
+
+# Bulk fighter data stays out of git — import scripts in, datasets out.
+data/raw/
+*.csv
